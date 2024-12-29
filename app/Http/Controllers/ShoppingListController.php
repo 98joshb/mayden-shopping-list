@@ -72,6 +72,14 @@ class ShoppingListController extends Controller
             'user_id' => Auth::user()->id,
         ]);
 
+        $existingItem = $shoppingList->items()->where('description', $request->description)->first();
+
+        if ($existingItem) {
+            return back()->withErrors([
+                'description' => 'This description already exists in your shopping list.',
+            ]);
+        }
+
         $nextPosition = $shoppingList->items()->max('order') + 1;
         $shoppingList->items()->create([
             'description' => $request->description,

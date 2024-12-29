@@ -5,6 +5,12 @@
                 <div class="p-6 text-gray-900">
                     <p class="text-lg font-semibold mb-4">{{$message}}</p>
 
+                    @if ($errors->has('description'))
+                        <p class="text-red-500 text-sm mb-4">
+                            {{ $errors->first('description') }}
+                        </p>
+                    @endif
+
                     <form method="POST"
                           action="{{ isset($item) ? route('shopping-list.update', $item->id) : route('shopping-list.store') }}">
 
