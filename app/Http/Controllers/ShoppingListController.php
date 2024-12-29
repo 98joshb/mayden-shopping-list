@@ -77,7 +77,7 @@ class ShoppingListController extends Controller
         if ($existingItem) {
             return back()->withErrors([
                 'description' => 'This description already exists in your shopping list.',
-            ]);
+            ])->withInput();
         }
 
         $nextPosition = $shoppingList->items()->max('order') + 1;
@@ -103,7 +103,15 @@ class ShoppingListController extends Controller
             'price' => 'required|numeric|min:0',
         ]);
 
-        ShoppingListItem::findOrFail($id)->update($validatedRequest);
+        $item = ShoppingListItem::findOrFail($id);
+
+        if (ShoppingListItem::where('description', $validatedRequest['description'])->where('id', '!=', $id)->exists()) {
+            return back()->withErrors([
+                'description' => 'This description already exists in your shopping list.'
+            ])->withInput();
+        }
+
+        $item->update($validatedRequest);
 
         return redirect()->route('shopping-list.index')->with('success', 'Item updated successfully!');
     }
