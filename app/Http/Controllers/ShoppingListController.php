@@ -14,7 +14,6 @@ class ShoppingListController extends Controller
      */
     public function index()
     {
-        // Fetch the shopping lists for the authenticated user
         $user = Auth::user();
         $shoppingList = ShoppingList::with(['items' => function ($query) {
             $query->orderBy('order', 'asc');
@@ -136,12 +135,6 @@ class ShoppingListController extends Controller
     {
         $item = ShoppingListItem::findOrFail($id);
         $item->update(['checked' => !$item->checked]);
-
-        // Check if the shopping list is empty
-        $shoppingList = $item->shoppingList;
-        if ($shoppingList->items()->count() === 0) {
-            $shoppingList->delete();
-        }
 
         return response()->json(['success' => true]);
     }
